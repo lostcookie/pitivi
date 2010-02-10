@@ -42,6 +42,7 @@ from pitivi.device import get_probe
 from pitivi.effects import Magician
 from pitivi.configure import APPNAME
 from pitivi.settings import GlobalSettings
+from pitivi.system import getSystem
 from pitivi.threads import ThreadMaster
 from pitivi.pluginmanager import PluginManager
 from pitivi.signalinterface import Signallable
@@ -145,6 +146,7 @@ class Pitivi(Loggable, Signallable):
         self.timelineLogObserver = TimelineLogObserver(self.action_log)
         self.projectLogObserver = ProjectLogObserver(self.action_log)
         self.sourcelist_log_observer = SourceListLogObserver(self.action_log)
+        self.system = getSystem()
 
     #{ Shutdown methods
 

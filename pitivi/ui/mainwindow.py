@@ -170,6 +170,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.toggleactions = None
         self.actiongroup = None
         self.settings = instance.settings
+        self.system = instance.system
         self.is_fullscreen = self.settings.mainWindowFullScreen
         self.timelinepos = 0
         self.prefsdialog = None
@@ -395,7 +396,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.projecttabs.show()
 
         # Viewer
-        self.viewer = PitiviViewer()
+        self.viewer = PitiviViewer(self.system)
         # drag and drop
         self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
                            [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],

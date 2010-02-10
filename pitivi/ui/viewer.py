@@ -25,6 +25,8 @@ import gtk
 from gtk import gdk
 import gst
 
+from gettext import gettext as _
+
 from pitivi.action import ViewAction
 
 from pitivi.stream import VideoStream
@@ -54,7 +56,7 @@ class PitiviViewer(gtk.VBox, Loggable):
     @type action: L{ViewAction}
     """
 
-    def __init__(self, action=None, pipeline=None):
+    def __init__(self, system, action=None, pipeline=None):
         """
         @param action: Specific action to use instead of auto-created one
         @type action: L{ViewAction}
@@ -62,6 +64,9 @@ class PitiviViewer(gtk.VBox, Loggable):
         gtk.VBox.__init__(self)
         Loggable.__init__(self)
         self.log("New PitiviViewer")
+
+        self.system = system
+        self.INHIBIT_REASON = _("playing media")
 
         self.seeker = Seeker(80)
         self.seeker.connect('seek', self._seekerSeekCb)
@@ -443,12 +448,15 @@ class PitiviViewer(gtk.VBox, Loggable):
         self.info("current state changed : %s", state)
         if state == int(gst.STATE_PLAYING):
             self.playpause_button.setPause()
+            self.system.inhibitScreensaver(self.INHIBIT_REASON)
         elif state == int(gst.STATE_PAUSED):
             self.playpause_button.setPlay()
+            self.system.uninhibitScreensaver(self.INHIBIT_REASON)
         self.currentState = state
 
     def _eosCb(self, unused_pipeline):
         self.playpause_button.setPlay()
+        self.system.uninhibitScreensaver(self.INHIBIT_REASON)
 
     def _elementMessageCb(self, unused_pipeline, message):
         name = message.structure.get_name()
