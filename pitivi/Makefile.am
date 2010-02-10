@@ -35,6 +35,7 @@ pitivi_PYTHON = \
 	sourcelist.py 	\
 	sourcelist_undo.py \
 	stream.py	\
+	system.py	\
 	threads.py	\
 	thumbnailcache.py \
 	undo.py		\
