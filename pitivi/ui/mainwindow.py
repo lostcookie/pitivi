@@ -223,7 +223,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
         if pause:
             project.pipeline.pause()
-        win = EncodingDialog(self, project)
+        win = EncodingDialog(self, project, self.system)
         win.window.connect("destroy", self._encodingDialogDestroyCb)
         self.set_sensitive(False)
         win.show()

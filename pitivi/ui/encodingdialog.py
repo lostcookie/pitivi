@@ -46,11 +46,13 @@ class EncodingDialog(GladeWindow, Loggable):
     """ Encoding dialog box """
     glade_file = "encodingdialog.glade"
 
-    def __init__(self, app, project, pipeline=None):
+    def __init__(self, app, project, system, pipeline=None):
         GladeWindow.__init__(self)
         Loggable.__init__(self)
 
         self.app = app
+        self.system = system
+        self.INHIBIT_REASON = _("rendering")
 
         # UI widgets
         self.progressbar = self.widgets["progressbar"]
@@ -188,6 +190,7 @@ class EncodingDialog(GladeWindow, Loggable):
                     ac.setSync(False)
             self.debug("setting pipeline to PAUSE")
             self.pipeline.pause()
+            self.system.inhibitSleep(self.INHIBIT_REASON)
             self.debug("done")
 
     def removeRecordAction(self):
@@ -204,3 +207,4 @@ class EncodingDialog(GladeWindow, Loggable):
             self.pipeline.disconnect_by_function(self._positionCb)
             self.pipeline.disconnect_by_function(self._eosCb)
             self.renderaction = None
+            self.system.uninhibitSleep(self.INHIBIT_REASON)
