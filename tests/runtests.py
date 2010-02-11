@@ -3,7 +3,14 @@ import os
 import sys
 import unittest
 
-SKIP_FILES = ['common', 'runtests', 'test_integration']
+from pitivi.system import getSystem, GnomeSystem
+
+
+SKIP_FILES = ['common', 'runtests', 'test_integration', 'test_system_gnome']
+
+system = getSystem()
+if isinstance(system, GnomeSystem):
+    SKIP_FILES.remove('test_system_gnome')
 
 def gettestnames(which):
     if not which:
