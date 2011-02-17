@@ -46,6 +46,7 @@ from pitivi.settings import GlobalSettings
 from pitivi.threads import ThreadMaster
 from pitivi.pluginmanager import PluginManager
 from pitivi.signalinterface import Signallable
+from pitivi.system import getSystem
 from pitivi.log.loggable import Loggable
 from pitivi.log import log
 from pitivi.ui.mainwindow import PitiviMainWindow
@@ -138,6 +139,7 @@ class Pitivi(Loggable, Signallable):
             self.settings.get_plugin_settings_path())
         self.effects = EffectsHandler()
         self.deviceprobe = get_probe()
+        self.system = getSystem ()
 
         self.projectManager = ProjectManager(self.effects)
         self._connectToProjectManager(self.projectManager)
