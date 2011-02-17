@@ -114,6 +114,7 @@ def ellipsize(combo):
 class EncodingDialog(GladeWindow, Renderer, Loggable):
     """ Encoding dialog box """
     glade_file = "encodingdialog.glade"
+    INHIBIT_REASON = _("Rendering Media")
 
     def __init__(self, app, project, pipeline=None):
         Loggable.__init__(self)
@@ -124,6 +125,7 @@ class EncodingDialog(GladeWindow, Renderer, Loggable):
         # clone the current project settings
         self.original_settings = self.project.getSettings()
         self.settings = self.original_settings.copy()
+        self.system = app.app.system
         self.project.setSettings(self.settings)
 
         # UI widgets
@@ -139,12 +141,19 @@ class EncodingDialog(GladeWindow, Renderer, Loggable):
         self._displaySettings()
 
         self.window.connect("delete-event", self._deleteEventCb)
+        self.pipeline.connect("state-changed", self._pipelineStateChangedCb)
         self.settings.connect("settings-changed", self._settingsChanged)
         self.settings.connect("encoders-changed", self._settingsChanged)
 
     def _settingsChanged(self, settings):
         self._updateSummary()
         self.updateResolution()
+
+    def _pipelineStateChangedCb(self, pipeline, state):
+        if state == gst.STATE_PLAYING:
+            self.system.inhibitSleep(EncodingDialog.INHIBIT_REASON)
+        else:
+            self.system.uninhibitSleep(EncodingDialog.INHIBIT_REASON)
 
     def _displaySettings(self):
         self.width = self.settings.videowidth
